@@ -1,0 +1,81 @@
+
+Function fnPROCX(pesquisa_valor As Variant, pesquisa_matriz As Range, matriz_retorno As Range, Optional se_nao_encontrada As Variant, Optional modo_correspondência As Integer, Optional modo_pesquisa As Integer) As Variant()
+    
+    Dim valor_encontrado As Boolean
+    
+    Dim posicao_valor(100000, 0) As Integer
+    Dim valores_saida(100000, 0) As Variant
+    
+    Dim contador_for As Integer
+    Dim indice_valor As Integer
+    
+    Dim primeira_celula_vazia As Integer
+    
+    valor_encontrado = False
+    
+    contador_for = 1
+    
+    indice_valor = 0
+    
+    primeira_celula_vazia = 0
+    
+    'Seleciona o modo de pesquisa, se vai ser de baixo para cima ou de cima para baixo, caso o valor não seja preenchido, por padrão, a pesquisa é de cima para baixo
+    If modo_pesquisa = 0 Then
+        'Cima para baixo
+        For Each celula In pesquisa_matriz.Cells
+            If celula.Value = pesquisa_valor Then
+                'Valor encontrado está aqui somente para, caso não encontre nenhum valor, ative a lógica do se não encontrado da função
+                valor_encontrado = True
+                
+                'Armazena o valor da matriz de retorno num array que será retornado pela função
+                valores_saida(indice_valor, 0) = matriz_retorno.Cells(contador_for, 1).Value
+                
+                'Aumenta o contador dos valores de saída
+                indice_valor = indice_valor + 1
+                
+            ElseIf celula.Value = Empty Then
+                'Está aqui para, caso o usuário selecione um intervalo completo de 1kk linhas, ele pare na primeira vazia, economizando processamento
+                Exit For
+            End If
+            'Só para auxiliar no cálculo, poderia ter sido feito como o For abaixo
+            contador_for = contador_for + 1
+        Next
+    Else
+        'Baixo para cima
+        contador_for = 1
+        For Each celula In pesquisa_matriz.Cells
+            If celula.Value = Empty Then
+               primeira_celula_vazia = contador_for
+               Exit For
+            End If
+            contador_for = contador_for + 1
+        Next
+        
+        'Caso não haja células vazias para usar como limite de cálculo, o limite superior será a quantidade de células do Range
+        If primeira_celula_vazia = 0 Then
+            primeira_celula_vazia = pesquisa_matriz.Count
+        End If
+        
+        For contador_for = primeira_celula_vazia To 1 Step -1
+            If pesquisa_matriz.Cells(contador_for, 1).Value = pesquisa_valor Then
+                valor_encontrado = True
+                valores_saida(indice_valor, 0) = matriz_retorno.Cells(contador_for, 1).Value
+                indice_valor = indice_valor + 1
+            End If
+        Next
+        
+    End If
+    
+    
+    If valor_encontrado Then
+    
+        fnPROCX = valores_saida
+        
+    Else
+    
+        fnPROCX = se_nao_encontrada
+    
+    End If
+    
+    
+End Function
