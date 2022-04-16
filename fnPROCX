@@ -3,13 +3,15 @@ Function fnPROCX(pesquisa_valor As Variant, pesquisa_matriz As Range, matriz_ret
     
     Dim valor_encontrado As Boolean
     
-    Dim posicao_valor(100000, 0) As Integer
-    Dim valores_saida(100000, 0) As Variant
+    Dim posicao_valor(100000, 100) As Integer
+    Dim valores_saida(100000, 100) As Variant
     
     Dim contador_for As Integer
     Dim indice_valor As Integer
     
     Dim primeira_celula_vazia As Integer
+    
+    Dim contador_for_saida As Integer
     
     valor_encontrado = False
     
@@ -18,7 +20,7 @@ Function fnPROCX(pesquisa_valor As Variant, pesquisa_matriz As Range, matriz_ret
     indice_valor = 0
     
     primeira_celula_vazia = 0
-    
+
     'Seleciona o modo de pesquisa, se vai ser de baixo para cima ou de cima para baixo, caso o valor não seja preenchido, por padrão, a pesquisa é de cima para baixo
     If modo_pesquisa = 0 Then
         'Cima para baixo
@@ -28,7 +30,9 @@ Function fnPROCX(pesquisa_valor As Variant, pesquisa_matriz As Range, matriz_ret
                 valor_encontrado = True
                 
                 'Armazena o valor da matriz de retorno num array que será retornado pela função
-                valores_saida(indice_valor, 0) = matriz_retorno.Cells(contador_for, 1).Value
+                For contador_for_saida = 1 To matriz_retorno.Columns.Count
+                    valores_saida(indice_valor, contador_for_saida - 1) = matriz_retorno.Cells(contador_for, contador_for_saida).Value
+                Next
                 
                 'Aumenta o contador dos valores de saída
                 indice_valor = indice_valor + 1
@@ -59,7 +63,9 @@ Function fnPROCX(pesquisa_valor As Variant, pesquisa_matriz As Range, matriz_ret
         For contador_for = primeira_celula_vazia To 1 Step -1
             If pesquisa_matriz.Cells(contador_for, 1).Value = pesquisa_valor Then
                 valor_encontrado = True
-                valores_saida(indice_valor, 0) = matriz_retorno.Cells(contador_for, 1).Value
+                For contador_for_saida = 1 To matriz_retorno.Columns.Count
+                    valores_saida(indice_valor, contador_for_saida - 1) = matriz_retorno.Cells(contador_for, contador_for_saida).Value
+                Next
                 indice_valor = indice_valor + 1
             End If
         Next
