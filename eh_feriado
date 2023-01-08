@@ -1,0 +1,91 @@
+Function eh_feriado(data As Date) As String
+   
+    Dim X As Integer
+    Dim Y As Integer
+    Dim dia_pascoa As Integer
+    Dim mes_pascoa As Integer
+    Dim a As Integer
+    Dim b As Integer
+    Dim c As Integer
+    Dim d As Integer
+    Dim e As Integer
+    
+    Dim dia_pascoa_string As String
+    Dim mes_pascoa_string As String
+    
+    Dim pascoa As Date
+    Dim paixao_cristo As Date
+    Dim corpus_christi As Date
+    
+    X = 24
+    Y = 5
+    
+    a = Year(data) Mod 19
+    b = Year(data) Mod 4
+    c = Year(data) Mod 7
+    d = (19 * a + X) Mod 30
+    e = (2 * b + 4 * c + 6 * d + Y) Mod 7
+    
+    If (d + e) > 9 Then
+        dia_pascoa = d + e - 9
+        mes_pascoa = 4
+        
+        If dia_pascoa = 26 And mes_pascoa = 4 Then
+            dia_pascoa = 19
+        End If
+        If dia_pascoa = 25 And mes_pascoa = 4 And d = 28 And a > 10 Then
+            dia_pascoa = 18
+        End If
+    Else
+        dia_pascoa = d + e + 22
+        mes_pascoa = 3
+    End If
+    
+    If dia_pascoa < 10 Then
+        dia_pascoa_string = "0" + CStr(dia_pascoa)
+    Else
+        dia_pascoa_string = CStr(dia_pascoa)
+    End If
+    
+    mes_pascoa_string = "0" + mes_pascoa
+
+    pascoa = CDate(dia_pascoa_string + "/" + mes_pascoa_string + "/" + CStr(Year(data)))
+    paixao_cristo = pascoa - 2
+    corpus_christi = pascoa + 60
+    
+    'Ano Novo
+    If Day(data) = 1 And month(data) = 1 Then
+        eh_feriado = "Sim"
+    'Tiradentes
+    ElseIf Day(data) = 21 And month(data) = 4 Then
+        eh_feriado = "Sim"
+    'Dia do Trabalho
+    ElseIf Day(data) = 1 And month(data) = 5 Then
+        eh_feriado = "Sim"
+    'Independencia do Brasil
+    ElseIf Day(data) = 7 And month(data) = 9 Then
+        eh_feriado = "Sim"
+    'Nossa Senhora
+    ElseIf Day(data) = 12 And month(data) = 10 Then
+        eh_feriado = "Sim"
+    'Finados
+    ElseIf Day(data) = 2 And month(data) = 11 Then
+        eh_feriado = "Sim"
+    'Proclamação da República
+    ElseIf Day(data) = 15 And month(data) = 11 Then
+        eh_feriado = "Sim"
+    'Natal
+    ElseIf Day(data) = 25 And month(data) = 12 Then
+        eh_feriado = "Sim"
+    'Paixão de Cristo
+    ElseIf data = paixao_cristo Then
+        eh_feriado = "Sim"
+    'Páscoa
+    ElseIf data = pascoa Then
+        eh_feriado = "Sim"
+    'Corpus Christi
+    ElseIf data = corpus_christi Then
+        eh_feriado = "Sim"
+    Else
+        eh_feriado = "Não"
+    End If
