@@ -1,0 +1,75 @@
+Attribute VB_Name = "data_functions"
+'Recebe uma string no formato "WYYWW" ou "SYYWW"e retorna a data correspondente a quarta feira daquela semana
+Function OBTER_DATA_ISO(SemanaISO As String) As Date
+    Dim ano As Integer
+    Dim semana As Integer
+    
+    ' Extrai o ano e o número da semana da string fornecida
+    ano = CInt(Mid(SemanaISO, 2, 2)) + 2000
+    semana = CInt(Mid(SemanaISO, 4, 2))
+    
+    ' Define o primeiro dia da semana 01
+    Dim primeiroDiaSemana01 As Date
+    primeiroDiaSemana01 = DateSerial(ano, 1, 4 - Weekday(DateSerial(ano, 1, 4), vbMonday))
+    
+    ' Calcula a data da quarta-feira da semana ISO fornecida
+    Dim dataQuartaFeira As Date
+    dataQuartaFeira = primeiroDiaSemana01 + (semana - 1) * 7 + 3
+    
+    OBTER_DATA_ISO = dataQuartaFeira
+End Function
+'Recebe uma data e retorna em qual semana ela acontece, tem a opção de incluir "W" ou "S" no retorno da função, por padrão retorna "W"
+Function OBTER_SEMANA_ISO(data As Date, Optional digito As String) As String
+    
+    Dim semana As Integer
+    
+    Dim semana_string As String
+       
+    semana = Application.WorksheetFunction.IsoWeekNum(data)
+    
+    If semana < 10 Then
+        semana_string = "0" + CStr(semana)
+    Else
+        semana_string = CStr(semana)
+    End If
+    
+    If digito = "" Then
+        OBTER_SEMANA_ISO = "W" + CStr(Year(data) - 2000) + semana_string
+    Else
+        OBTER_SEMANA_ISO = Left(digito, 1) + CStr(Year(data) - 2000) + semana_string
+    End If
+    
+End Function
+'Soma ou substrai a quantidade de semanas da semana no formato "WYYWW"
+Function OP_SEMANA_ISO(SemanaISO As String, qtd As Integer) As String
+    Dim semana As Integer
+    Dim ano As Integer
+    Dim digito As String
+    Dim auxiliar_semana As String
+    
+    digito = Left(SemanaISO, 1)
+    semana = CInt(Right(SemanaISO, 2))
+    ano = CInt(Left(Right(SemanaISO, 4), 2))
+    
+    semana = semana + qtd
+    
+    While semana > 52 Or semana < 1
+        If semana > 52 Then
+        
+            semana = semana - 52
+            ano = ano + 1
+        ElseIf semana < 1 Then
+            semana = semana + 52
+            ano = ano - 1
+        End If
+    Wend
+    
+    If semana < 10 Then
+        auxiliar_semana = "0"
+    Else
+        auxiliar_semana = ""
+    End If
+    
+    OP_SEMANA_ISO = digito + CStr(ano) + auxiliar_semana + CStr(semana)
+End Function
+
